@@ -1,15 +1,19 @@
 FROM node:20.3.1-alpine
 
-ENV PATH /app/node_modules/.bin:$PATH
-
-EXPOSE 3000
-
+# Set the working directory in the container
 WORKDIR /app
 
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --silent
+# Copy package.json and package-lock.json into the container
+COPY frontend/package*.json ./
 
-COPY . ./
+# Install dependencies
+RUN npm install
 
+# Copy the rest of the frontend code into the container
+COPY frontend /app/
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Run the frontend development server
 CMD ["npm", "run", "dev"]
