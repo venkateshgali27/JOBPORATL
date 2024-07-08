@@ -83,11 +83,15 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 #
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-     }
- }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PWD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+    }
+}
 
 
 RQ_QUEUES = {
@@ -129,32 +133,15 @@ USE_I18N = True
 
 USE_TZ = True
 
-import os
-from django.conf import settings
+STATIC_DIR = os.path.join(BASE_DIR, "/static/")
+STATICFILES_DIRS = ("./backend/static",)
+if not os.path.isdir(STATIC_DIR):
+    os.mkdir(STATIC_DIR)
 
-# Ensure you have imported BASE_DIR from Django settings
-BASE_DIR = settings.BASE_DIR
-
-# Define paths
-STATIC_DIR = os.path.join(BASE_DIR, "static")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
-# Create directories if they do not exist
-if not os.path.exists(STATIC_DIR):
-    os.makedirs(STATIC_DIR, exist_ok=True)
-
-if not os.path.exists(MEDIA_ROOT):
-    os.makedirs(MEDIA_ROOT, exist_ok=True)
-
-# Configure static files
-STATICFILES_DIRS = [STATIC_DIR]
-
-# Configure media settings
+MEDIA_ROOT = os.path.join(BASE_DIR, "/media/")
 MEDIA_URL = "/media/"
 
-# Environment variable for SES (Amazon Simple Email Service)
 USE_SES = env.bool("USE_SES")
-
 
 # AWS keys
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
